@@ -19,11 +19,11 @@ const authorize = async (req, res, next) => {
     }
 };
 const authorizeToken = async (token) => {
-    if (token === undefined){
+    if (token === undefined) {
         return false;
     }
     try {
-        const _token = token.replace("Bearer" , ""); 
+        const _token = token.replace("Bearer", "");
         const decoded = jwt.verify(_token, process.env.JWT_KEY);
         const user = await User.findOne({
             _id: decoded._id,
@@ -31,16 +31,16 @@ const authorizeToken = async (token) => {
         });
 
         if (!user) {
-            return false
+            return false;
         }
 
         return true;
     } catch (e) {
         return e;
     }
-}
+};
 
 module.exports = {
     authorize,
-    authorizeToken
-}
+    authorizeToken,
+};

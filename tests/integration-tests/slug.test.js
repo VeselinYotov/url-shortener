@@ -51,9 +51,5 @@ test("Should not create a slug with host URL ", async (done) => {
 
 //Should i use HTTP CONNECT?
 test("Should redirect to URL by slug", async () => {
-    await request(app)
-        .get("/slug")
-        .send(slugTwo.slug)
-        .expect(302);
+    await request(app).get("/slug").send(slugTwo.slug).expect(302);
 });
-

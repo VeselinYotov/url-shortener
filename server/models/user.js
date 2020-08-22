@@ -24,10 +24,11 @@ const userSchema = new Schema(
             lowercase: true,
             validate: {
                 validator: (email) => {
-                    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+                    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+                        email
+                    );
                 },
-                message: (email) =>
-                    `${email.value} is not a valid email`,
+                message: (email) => `${email.value} is not a valid email`,
             },
         },
         password: {
@@ -65,7 +66,7 @@ const userSchema = new Schema(
 
 userSchema.methods.generateJWT = async function () {
     const user = this;
-    const token = jwt.sign({ _id: user._id }, "#34");
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
     user.tokens = user.tokens.concat({ token });
     await user.save();
     return {

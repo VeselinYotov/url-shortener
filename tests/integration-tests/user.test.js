@@ -65,14 +65,11 @@ test("Should get profile for user", async (done) => {
         .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200);
-        done()
+    done();
 });
 
-// For some reason only this test and ../slug.test.js POST require callback() ? 
+// For some reason only this test and ../slug.test.js POST require callback() ?
 test("Should not get profile for unauthenticated user", async (done) => {
-    await request(app)
-        .get("/user/me")
-        .send()
-        .expect(401);
-        done();
+    await request(app).get("/user/me").send().expect(401);
+    done();
 });

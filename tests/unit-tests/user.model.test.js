@@ -1,25 +1,38 @@
 const User = require("../../server/models/user");
 require("../../server/helpers/db");
-const { validUser, UserWithInvalidEmail } = require("../testData/unit.data");
+const {
+    validUser,
+    UserWithInvalidEmail,
+    UserWithInvalidUsername,
+    deleteUserDatabase
+} = require("../testData/unit.data");
 
-const dump = async () => {
-    await User.deleteMany();
-};
-afterEach(dump);
+afterEach(deleteUserDatabase);
 
 test("Should Create and Save new User", async () => {
-    const saved_validUser = await new User(validUser).save();
-    expect(saved_validUser._id).toBeDefined();
-    expect(saved_validUser.username).toBe(validUser.username);
-    expect(saved_validUser.email).toBe(validUser.email);
-    expect(saved_validUser.password).not.toBe(validUser.password);
-    expect(saved_validUser.tokens[1]).toBe(validUser.tokens[1]);
+    const savedValidUser = await new User(validUser).save();
+    expect(savedValidUser._id).toBeDefined();
+    expect(savedValidUser.username).toBe(validUser.username);
+    expect(savedValidUser.email).toBe(validUser.email);
+    expect(savedValidUser.password).not.toBe(validUser.password);
+    expect(savedValidUser.tokens[1]).toBe(validUser.tokens[1]);
 });
 
-test("Should return validation error on wrong email", async () => {
+test("Should return validation error on wrong email/username", async () => {
     await new User(UserWithInvalidEmail).save((err) => {
-        if (err){
+        if (err) {
             expect(err._message).toBe("User validation failed");
-        } 
+        }
     });
+    await new User(UserWithInvalidUsername).save((err) => {
+        if (err) {
+            expect(err._message).toBe("User validation failed");
+        }
+    });
+});
+
+test("Should generate token for User by their ObjectId", async () => {
+    const userWithoutToken = new User(validUser);
+    const userWithToken = await userWithoutToken.generateJWT();
+    expect(userWithToken._doc.tokens[1]).toBeDefined();
 });
