@@ -18,23 +18,24 @@ const authorize = async (req, res, next) => {
         res.send(401);
     }
 };
+
 const authorizeToken = async (token) => {
     if (token === undefined) {
         return false;
     }
     try {
-        const _token = token.replace("Bearer", "");
+        const _token = token.replace("Bearer ", "");
         const decoded = jwt.verify(_token, process.env.JWT_KEY);
         const user = await User.findOne({
             _id: decoded._id,
-            "tokens.token": token,
+            "tokens.token": _token,
         });
-
         if (!user) {
             return false;
         }
+        // Returns User to know which user is being authorized (see slug route)
+        return user;
 
-        return true;
     } catch (e) {
         return e;
     }

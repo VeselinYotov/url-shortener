@@ -3,69 +3,84 @@ const jwt = require("jsonwebtoken");
 const User = require("../../server/models/user");
 const Slug = require("../../server/models/slug");
 
-const slugOneId = new mongoose.Types.ObjectId();
-const slugOne = {
-    _id: slugOneId,
+const slugWithHostURLId = new mongoose.Types.ObjectId();
+const slugWithHostURL = {
+    _id: slugWithHostURLId,
     URL: process.env.URL,
     slug: "hsorew3",
 };
 
-const slugTwoId = new mongoose.Types.ObjectId();
-const slugTwo = {
-    _id: slugTwoId,
+// It is saved in database in loadDatabase() because it is used in GET test
+const validSlugId = new mongoose.Types.ObjectId();
+const validSlug = {
+    _id: validSlugId,
     URL: "https://www.chess.com/home",
     slug: "chess",
 };
 
-const slugThreeId = new mongoose.Types.ObjectId();
-const slugThree = {
-    _id: slugThreeId,
+const slugWithEmptyValueId = new mongoose.Types.ObjectId();
+const slugWithEmptyValue = {
+    _id: slugWithEmptyValueId,
     URL: "http://www.three.co.uk/",
-    slug: "ukphones",
+    slug: "",
 };
 
-const slugFourId = new mongoose.Types.ObjectId();
-const slugFour = {
-    _id: slugFourId,
-    URL: "https://www.zamunda.net/bananas",
-    slug: "kher",
+const slugForUserId = new mongoose.Types.ObjectId();
+const slugForUser = {
+    _id: slugForUserId,
+    URL: "https://www.facebook.com/",
+    slug: "fcbk",
 };
 
-const userOneId = new mongoose.Types.ObjectId();
-const userOne = {
-    _id: userOneId,
+const validUserWithURLId = new mongoose.Types.ObjectId();
+const validUserWithURL = {
+    _id: validUserWithURLId,
     username: "JamesCharles",
     email: "charles_j@something.com",
     password: "#PasW#ord",
-    urls: [slugTwoId],
+    urls: [validSlugId],
     tokens: [
         {
-            token: jwt.sign({ _id: userOneId }, process.env.JWT_KEY),
+            token: jwt.sign({ _id: validUserWithURLId }, process.env.JWT_KEY),
         },
     ],
 };
-const userTwoId = new mongoose.Types.ObjectId();
-const userTwo = {
-    _id: userTwoId,
+
+const validUserId = new mongoose.Types.ObjectId();
+const validUser = {
+    _id: validUserId,
     username: "IvoryGreen",
     email: "green@something.com",
     password: "$OJVDA",
     tokens: [
         {
-            token: jwt.sign({ _id: userTwoId }, process.env.JWT_KEY),
+            token: jwt.sign({ _id: validUserId }, process.env.JWT_KEY),
         },
     ],
 };
 
-const userThreeId = new mongoose.Types.ObjectId();
-const userThree = {
-    _id: userThreeId,
+const userToAddURLId = new mongoose.Types.ObjectId();
+const userToAddURL = {
+    _id: userToAddURLId,
+    username: "ConstVikov",
+    email: "vikov@sst.com",
+    password: "HF#V)a",
+    tokens: [
+        {
+            token: jwt.sign({ _id: userToAddURLId }, process.env.JWT_KEY),
+        },
+    ],
+};
+
+const nonExistentUserId = new mongoose.Types.ObjectId();
+const nonExistentUser = {
+    _id: nonExistentUserId,
     username: "ConGrat",
     email: "bay@sg.com",
     password: "$vadf@a",
     tokens: [
         {
-            token: jwt.sign({ _id: userThreeId }, process.env.JWT_KEY),
+            token: jwt.sign({ _id: nonExistentUserId }, process.env.JWT_KEY),
         },
     ],
 };
@@ -76,22 +91,28 @@ const dumpDatabase = async () => {
 
 const loadDatabase = async () => {
     await dumpDatabase();
-    await new User(userOne).save();
-    await new Slug(slugThree).save();
+    await new User(validUserWithURL).save();
+    await new Slug(validSlug).save();
+    await new User(userToAddURL).save();
 };
 
 module.exports = {
-    userOneId,
-    userOne,
-    userTwoId,
-    userTwo,
-    userThreeId,
-    userThree,
-    slugOne,
-    slugTwo,
-    slugThree,
-    slugFourId,
-    slugFour,
+    validUserWithURLId,
+    validUserWithURL,
+    validUserId,
+    validUser,
+    nonExistentUserId,
+    nonExistentUser,
+    slugWithHostURLId,
+    slugWithHostURL,
+    validSlugId,
+    validSlug,
+    slugForUserId,
+    slugForUser,
+    userToAddURLId,
+    userToAddURL,
+    slugWithEmptyValueId,
+    slugWithEmptyValue,
     loadDatabase,
     dumpDatabase,
 };
