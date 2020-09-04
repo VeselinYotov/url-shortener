@@ -1,41 +1,40 @@
 const express = require("express");
 const router = new express.Router();
 const User = require("../models/user");
-const { authorize }  = require("../middleware/authorize");
+const { authorize } = require("../middleware/authorize");
+const UserServices = require("../services/user.services");
 
 router.post("/user", async (req, res) => {
-    const user = new User(req.body);
-    try {
-        await user.save();
-        const token = user.generateJWT();
-
-        res.status(201).send({ user, token });
-    } catch (e) {
-        res.status(404);
-        throw new Error(e);
+    const user = req.body;
+    if (await UserServices.isValid(user)) {
+        try {
+            const response = await UserServices.signUp(user);
+            res.status(201).send(response);
+        } catch (e) {
+            res.status(404);
+            throw new Error(e);
+        }
     }
 });
 
 router.post("/user/login", async (req, res) => {
     const userInfo = req.body;
-
     try {
-        const user = await User.findUser(userInfo.email, userInfo.password);
-        const token = await user.generateJWT();
-
-        res.send({ user, token });
+        const response = await UserServices.login(
+            userInfo.email,
+            userInfo.password
+        );
+        res.send(response);
     } catch (e) {
         res.send(404);
     }
 });
 
 router.post("/user/logout", authorize, async (req, res) => {
+    const user = req.user;
+    const token = req.token;
     try {
-        req.user.tokens = req.user.tokens.filter((token) => {
-            return token.token !== req.token;
-        });
-        await req.user.save();
-
+        UserServices.logOut(user, token);
         res.send();
     } catch (e) {
         res.status(500).send();
@@ -43,8 +42,10 @@ router.post("/user/logout", authorize, async (req, res) => {
 });
 
 router.get("/user/me", authorize, async (req, res) => {
+    const token = req.headers.authorization;
+    const user = await UserServices.findByToken(token);
     try {
-        res.status(200).send(req.body);
+        res.status(200).send(user);
     } catch (e) {
         res.status(400);
     }

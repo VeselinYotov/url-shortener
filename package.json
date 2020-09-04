@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node -r dotenv/config server/server.js",
-    "test": "jest /tests --testEnvironment=node --runInBand --forceExit"
+    "test": "jest /tests --testEnvironment=node --runInBand --forceExit --detectOpenHandles"
   },
   "jest": {
     "setupFiles": ["dotenv/config"]

@@ -1,5 +1,5 @@
 const User = require("../../server/models/user");
-require("../../server/helpers/db");
+require("../../server/loaders/db");
 const {
     validUser,
     UserWithInvalidEmail,

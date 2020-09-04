@@ -47,6 +47,7 @@ test("Should not create a slug with host URL ", async (done) => {
         .post("/slug")
         .send({
             URL: slugWithHostURL.URL,
+            slug: "Vesko"
         })
         .expect(400);
     done();
@@ -69,6 +70,7 @@ test("Save a slug to User by Authorization token", async () => {
             slug: slugForUser.slug,
         })
         .expect(201);
+
     const user = await User.findById(userToAddURLId);
     expect(response.body.slug._id).toBe(user.urls[0].toString());
 });

@@ -19,7 +19,7 @@ test("Should signup a new user", async () => {
             password: validUser.password,
         })
         .expect(201);
-
+        
     // Check if user has been added to database
     const user = await User.findById(response.body.user._id);
     expect(user).not.toBeNull();

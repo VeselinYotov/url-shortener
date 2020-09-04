@@ -13,6 +13,7 @@ const authorize = async (req, res, next) => {
         if (!user) {
             throw new Error("Cant authorize");
         }
+
         next();
     } catch (e) {
         res.send(401);
@@ -23,6 +24,7 @@ const authorizeToken = async (token) => {
     if (token === undefined) {
         return false;
     }
+
     try {
         const _token = token.replace("Bearer ", "");
         const decoded = jwt.verify(_token, process.env.JWT_KEY);
@@ -30,12 +32,13 @@ const authorizeToken = async (token) => {
             _id: decoded._id,
             "tokens.token": _token,
         });
+
         if (!user) {
             return false;
         }
+        
         // Returns User to know which user is being authorized (see slug route)
         return user;
-
     } catch (e) {
         return e;
     }

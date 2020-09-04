@@ -1,5 +1,5 @@
 const Slug = require("../../server/models/Slug");
-require("../../server/helpers/db");
+require("../../server/loaders/db");
 const {
     validSlug,
     slugWithInvalidURL,
